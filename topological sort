@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<vector<int>> adj(V);
+        vector<int> ind(V);
+        vector<int> ans;
+        for(int i=0;i<edges.size();i++){
+            int from=edges[i][0];
+            int to=edges[i][1];
+            adj[from].push_back(to);
+            ind[to]++;
+            }
+            queue<int> q;
+            for(int i=0;i<V;i++){
+                if(ind[i]==0){
+                    q.push(i);
+                }
+            }
+            while(!q.empty()){
+                int curr=q.front();
+                q.pop();
+                ans.push_back(curr);
+                for(int x:adj[curr]){
+                    ind[x]--;
+                    if(ind[x]==0){
+                        q.push(x);
+                    }
+                }
+            }
+            return ans;
+    }
+};

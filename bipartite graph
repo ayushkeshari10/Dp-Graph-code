@@ -1,0 +1,60 @@
+class Solution {
+public:
+    bool isBipartite(int V, vector<vector<int>> &edges) {
+
+        // Adjacency list representation of graph
+        vector<vector<int>> adj(V);
+
+        // Build the undirected graph
+        for(int i = 0; i < edges.size(); i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        // Color array:
+        // -1 -> not colored
+        //  0 -> color A
+        //  1 -> color B
+        vector<int> color(V, -1);
+
+        // Traverse all vertices (handles disconnected graphs)
+        for(int i = 0; i < V; i++){
+
+            // If node is not yet colored, start BFS
+            if(color[i] == -1){
+
+                queue<int> q;
+                q.push(i);
+
+                // Assign first color
+                color[i] = 0;
+
+                // Standard BFS
+                while(!q.empty()){
+                    int curr = q.front();
+                    q.pop();
+
+                    // Visit all adjacent nodes
+                    for(int x : adj[curr]){
+
+                        // If neighbor is uncolored
+                        if(color[x] == -1){
+                            // Assign opposite color
+                            color[x] = 1 - color[curr];
+                            q.push(x);
+                        }
+                        // If neighbor has same color → not bipartite
+                        else if(color[x] == color[curr]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // If no conflict found, graph is bipartite
+        return true;
+    }
+};

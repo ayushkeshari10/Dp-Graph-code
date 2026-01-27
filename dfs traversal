@@ -1,0 +1,19 @@
+class Solution {
+  public:
+  void dfs(vector<vector<int>>&adj,vector<bool>&visited,int start,vector<int>&ans){
+      visited[start]=true;
+      ans.push_back(start);
+      for(int neigh:adj[start]){
+          if(!visited[neigh]){
+              dfs(adj,visited,neigh,ans);
+          }
+      }
+  }
+    vector<int> dfs(vector<vector<int>>& adj) {
+        // Code here
+        vector<int> ans;
+        vector<bool> visited(adj.size(),false);
+        dfs(adj,visited,0,ans);
+        return ans;
+    }
+};

@@ -1,0 +1,32 @@
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> adj(numCourses);
+        vector<int> ind(numCourses);
+        vector<int> ans;
+        for(int i=0;i<prerequisites.size();i++){
+            int from=prerequisites[i][0];
+            int to=prerequisites[i][1];
+            adj[from].push_back(to);
+            ind[to]++;
+        }
+        queue<int> q;
+        for(int i=0;i<numCourses;i++){
+            if(ind[i]==0){
+                q.push(i);
+            }
+        }
+        while(!q.empty()){
+            int curr=q.front();
+            q.pop();
+            ans.push_back(curr);
+            for(int x:adj[curr]){
+                ind[x]--;
+                if(ind[x]==0){
+                    q.push(x);
+                }
+            }
+        }
+        return ans.size()==numCourses;
+    }
+};

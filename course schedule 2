@@ -1,0 +1,36 @@
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        int n=numCourses;
+        vector<vector<int>> adj(n);
+        vector<int> ans;
+        vector<int> ind(n);
+        for(int i=0;i<prerequisites.size();i++){
+            int to=prerequisites[i][0];
+            int from=prerequisites[i][1];
+            adj[from].push_back(to);
+            ind[to]++;
+        }
+        queue<int> q;
+        for(int i=0;i<n;i++){
+            if(ind[i]==0){
+                q.push(i);
+            }
+        }
+        while(!q.empty()){
+            int curr=q.front();
+            q.pop();
+            ans.push_back(curr);
+            for(int x:adj[curr]){
+                ind[x]--;
+                if(ind[x]==0){
+                    q.push(x);
+                }
+            }
+        }
+        if(ans.size()!=n){
+            return {};
+        }
+        return ans;
+    }
+};
