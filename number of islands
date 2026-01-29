@@ -1,0 +1,41 @@
+class Solution {
+  public:
+  void bfs(int i,int j,vector<vector<char>>&grid,vector<vector<bool>>&visited){
+      int n=grid.size();
+      int m=grid[0].size();
+      queue<pair<int,int>>q;
+      q.push({i,j});
+      while(!q.empty()){
+          int r=q.front().first;
+          int c=q.front().second;
+          q.pop();
+          int dx[]={0,0,1,-1,-1,-1,1,1};
+          int dy[]={1,-1,0,0,-1,1,-1,1};
+          for(int i=0;i<8;i++){
+              int nr=r+dx[i];
+              int nc=c+dy[i];
+              if(nr>=0&&nc>=0&&nr<n&&nc<m&&visited[nr][nc]==false&&grid[nr][nc]=='L'){
+                  visited[nr][nc]=true;
+                  q.push({nr,nc});
+              }
+          }
+      }
+  }
+    int countIslands(vector<vector<char>>& grid) {
+        // Code here
+        int n=grid.size();
+        int m=grid[0].size();
+        int count=0;
+        vector<vector<bool>>visited(n,vector<bool>(m,0));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]=='L'&&visited[i][j]==false){
+                    visited[i][j]=true;
+                  bfs(i,j,grid,visited);
+                  count++;
+                }
+            }
+        }
+        return count;
+    }
+};
