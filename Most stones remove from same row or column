@@ -1,0 +1,81 @@
+class Solution {
+    vector<int>rank,parent;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionbyrank(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return ;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+           parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else {
+            parent[ulp_v]=ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int n=stones.size();
+        parent.resize(n);
+        rank.assign(n,0);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        for(int i=0;i<n;i++){
+              for(int j=i+1;j<n;j++){
+                if(stones[i][0]==stones[j][0]||stones[i][1]==stones[j][1]){
+                    unionbyrank(i,j);
+                }
+              }   
+               }
+               int count=0;
+               for(int i=0;i<n;i++){
+                if(find(i)==i){
+                    count++;
+                }
+               }
+               return n-count;
+
+        // int n=stones.size();
+        // vector<vector<int>>adj(n);
+        // for(int i=0;i<n;i++){
+        //     for(int j=i+1;j<n;j++){
+        //         if(stones[i][0]==stones[j][0]||stones[i][1]==stones[j][1]){
+        //           adj[i].push_back(j);
+        //           adj[j].push_back(i);
+        //         }
+        //     }
+        // }
+        // vector<bool>visited(n,false);
+        // int com=0;
+        // queue<int>q;
+        // for(int i=0;i<n;i++){
+        //    if(!visited[i]){
+        //     com++;
+        //     q.push(i);
+        //     visited[i]=true;
+        //     while(!q.empty()){
+        //         int node=q.front();
+        //         q.pop();
+        //         for(int x:adj[node]){
+        //             if(!visited[x]){
+        //                 visited[x]=1;
+        //                 q.push(x);
+        //             }
+        //         }
+        //     }
+        //    }
+        // }   
+        // return n-com;
+ }
+};
