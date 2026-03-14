@@ -1,0 +1,64 @@
+class Solution {
+    vector<int>rank,parent;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionr(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return ;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else{
+            parent[ulp_v]=ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+public:
+    vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>>& edgeList, vector<vector<int>>& queries) {
+        parent.resize(n);
+        rank.resize(n,0);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        sort(edgeList.begin(),edgeList.end(),[](auto &a,auto &b){
+             return a[2]<b[2];
+        });
+        vector<vector<int>>q;
+        for(int i=0;i<queries.size();i++){
+            q.push_back({queries[i][0],queries[i][1],queries[i][2],i});
+        }
+        sort(q.begin(),q.end(),[](auto &a,auto &b){
+            return a[2]<b[2];
+        });
+        int m=queries.size();
+        vector<bool>ans(m);
+        int j=0;
+        for(int i=0;i<m;i++){
+            int u=q[i][0];
+            int v=q[i][1];
+            int l=q[i][2];
+            int idx=q[i][3];
+            while(j<edgeList.size()&&edgeList[j][2]<l){
+                unionr(edgeList[j][0],edgeList[j][1]);
+                j++;
+            }
+            if(find(u)==find(v)){
+                ans[idx]=true;
+            }
+            else{
+                ans[idx]=false;
+            }
+        }
+        return ans;
+            }
+};
