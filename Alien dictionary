@@ -1,0 +1,66 @@
+class Solution {
+  public:
+    string findOrder(vector<string> &words) {
+        // code here
+        set<char> s;
+        for(int i=0;i<words.size();i++){
+            for(int j=0;j<words[i].size();j++){
+                char c=words[i][j];
+                s.insert(c); 
+            }
+        }
+        unordered_map<char,int>mp;
+        int count = 0;
+        for(char c: s){
+            mp[c]=count;
+            count++;
+        }
+        int n=s.size();
+        vector<vector<int>>adj(n);
+        vector<int>ind(n);
+        string ans;
+        for(int i=0;i<words.size()-1;i++){
+            string str1=words[i];
+            string str2=words[i+1];
+            int j=0;
+            while(j<str1.size()&&j<str2.size()&&str1[j]==str2[j]){
+                j++;
+            }
+            if(j==str2.size()&&str1.size()>str2.size()){
+                return "";
+            }
+            if(j<str1.size()&&j<str2.size()){
+            int from=mp[str1[j]];
+            int to=mp[str2[j]];
+            adj[from].push_back(to);
+            ind[to]++;
+        }
+        }
+        queue<int>q;
+        for(int i=0;i<n;i++){
+            if(ind[i]==0){
+                q.push(i);
+            }
+        }
+        while(!q.empty()){
+            int curr=q.front();
+            q.pop();
+            for(char c:s){
+                if(mp[c]==curr){
+                    ans+=c;
+                    break;
+                }
+            }
+            for(int x:adj[curr]){
+                ind[x]--;
+                if(ind[x]==0){
+                    q.push(x);
+                }
+            }
+        }
+        if(ans.size()!=n){
+            return "";
+        }
+    return ans;
+    }
+};
