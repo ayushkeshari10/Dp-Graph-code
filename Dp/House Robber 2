@@ -1,0 +1,35 @@
+class Solution {
+    int chori(vector<int> &nums, vector<int> &dp, int i) {
+        if (i >= nums.size()) {
+            return 0;
+        }
+        if (dp[i] != -1) {
+            return dp[i];
+        }
+
+        int amount = nums[i] + chori(nums, dp, i + 2);
+        int sec = chori(nums, dp, i + 1);
+
+        return dp[i] = max(amount, sec);
+    }
+
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) {
+            return nums[0];
+        }
+
+        // case 1: ignore first house
+        vector<int> first(nums.begin() + 1, nums.end());
+        vector<int> dp1(first.size(), -1);
+        int ans1 = chori(first, dp1, 0);
+
+        // case 2: ignore last house
+        vector<int> last(nums.begin(), nums.end() - 1);
+        vector<int> dp2(last.size(), -1);
+        int ans2 = chori(last, dp2, 0);
+
+        return max(ans1, ans2);
+    }
+};
