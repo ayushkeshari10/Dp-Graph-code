@@ -1,0 +1,51 @@
+//Position this line where user code will be pasted.
+class Solution {
+  public:
+  void dfs(int node,vector<vector<int>>&adj,vector<bool>&visited,stack<int>&s){
+      visited[node]=true;
+      for(int x:adj[node]){
+          if(!visited[x]){
+              dfs(x,adj,visited,s);
+          }
+      }
+      s.push(node);
+  }
+  void rdfs(int node,vector<vector<int>>&revadj,vector<bool>&visited1){
+      visited1[node]=1;
+      for(int x:revadj[node]){
+          if(!visited1[x]){
+              rdfs(x,revadj,visited1);
+          }
+      }
+  }
+    int kosaraju(vector<vector<int>> &adj) {
+        // code here
+        int n=adj.size();
+        vector<vector<int>>revadj(n);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<adj[i].size();j++){
+                int from=adj[i][j];
+                int to=i;
+                revadj[from].push_back(to);
+            }
+        }
+        vector<bool>visited(n,0);
+        vector<bool>visited1(n,0);
+        stack<int>s;
+        for(int i=0;i<n;i++){
+            if(!visited[i]){
+                dfs(i,adj,visited,s);
+            }
+        }
+        int count=0;
+        while(!s.empty()){
+            int st=s.top();
+            s.pop();
+            if(!visited1[st]){
+                rdfs(st,revadj,visited1);
+                count++;
+            }
+        }
+        return count;
+    }
+};
