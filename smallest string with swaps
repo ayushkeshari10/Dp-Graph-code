@@ -1,0 +1,56 @@
+class Solution {
+    vector<int>parent,rank;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionr(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else{
+            parent[ulp_v]=ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+public:
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        int n=s.size();
+        rank.resize(n,0);
+        parent.resize(n);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        for(int i=0;i<pairs.size();i++){
+            int u=pairs[i][0];
+            int v=pairs[i][1];
+            unionr(u,v);
+        }
+        vector<vector<int>>component(n);
+        for(int i=0;i<n;i++){
+                component[find(i)].push_back(i);
+        }
+        for(int i=0;i<component.size();i++){
+            vector<int> idx=component[i];
+            string temp="";
+            for(auto &x:idx){
+                temp.push_back(s[x]);
+            }
+            sort(temp.begin(),temp.end());
+            for(int j=0;j<idx.size();j++){
+                s[idx[j]]=temp[j];
+            }
+        }
+        return s;
+    }
+};
