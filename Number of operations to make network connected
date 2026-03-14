@@ -1,0 +1,80 @@
+class Solution {
+    vector<int>rank;
+    vector<int>parent;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionr(int u,int v){
+        int upu=find(u);
+        int upv=find(v);
+        if(upu==upv){
+            return ;
+        }
+        if(rank[upu]<rank[upv]){
+            parent[upu]=upv;
+        }
+        else if(rank[upv]<rank[upu]){
+            parent[upv]=upu;
+        }
+        else{
+            parent[upv]=upu;
+            rank[upu]++;
+        }
+    }
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+    //     if(connections.size()<n-1){
+    //         return -1;
+    //     }
+    //     vector<vector<int>>adj(n);
+    //     for(int i=0;i<connections.size();i++){
+    //         int from=connections[i][0];
+    //         int to=connections[i][1];
+    //         adj[from].push_back(to);
+    //         adj[to].push_back(from);
+    //     }
+    //     vector<bool>visited(n,0);
+    //     queue<int>q;
+    //     int count=0;
+    //     for(int i=0;i<n;i++){
+    //         if(!visited[i]){
+    //             visited[i]=true;
+    //             q.push(i);
+    //             count++;
+    //         }
+        
+    //     while(!q.empty()){
+    //         int node=q.front();
+    //         q.pop();
+    //         for(int x:adj[node]){
+    //             if(!visited[x]){
+    //                 visited[x]=true;
+    //                 q.push(x);
+    //             }
+    //         }
+    //     }
+    //     }
+    //  return count-1;
+    if(connections.size()<n-1){
+        return -1;
+    }
+    rank.assign(n,0);
+    parent.resize(n);
+    for(int i=0;i<n;i++){
+        parent[i]=i;
+    }
+    for(int i=0;i<connections.size();i++){
+        int u=connections[i][0];
+        int v=connections[i][1];
+        unionr(u,v);
+    }
+    unordered_set<int>s;
+    for(int i=0;i<n;i++){
+        s.insert(find(i));
+    }
+    return s.size()-1;
+    }
+};
