@@ -1,0 +1,57 @@
+class Solution {
+    vector<int>parent,rank;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionr(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else{
+            parent[ulp_v]=ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+public:
+    vector<bool> pathExistenceQueries(int n, vector<int>& nums, int maxDiff, vector<vector<int>>& queries) {
+        parent.resize(n);
+        rank.resize(n,0);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        vector<vector<int>>edges;
+        for(int i=0;i<nums.size()-1;i++){
+           if(abs(nums[i]-nums[i+1])<=maxDiff){
+            edges.push_back({i,i+1});
+           }
+        }
+       for(int i=0;i<edges.size();i++){
+        int u=edges[i][0];
+        int v=edges[i][1];
+        unionr(u,v);
+       }
+       vector<bool>ans(queries.size());
+       for(int i=0;i<queries.size();i++){
+        int a=queries[i][0];
+        int b=queries[i][1];
+          if(find(a)==find(b)){
+            ans[i]=true;
+          }
+          else {
+            ans[i]=false;
+          }
+       }
+       return ans;
+    }
+};
