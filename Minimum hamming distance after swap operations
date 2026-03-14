@@ -1,0 +1,75 @@
+class Solution {
+    vector<int>parent,rank;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+   void  unionr(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else{
+            parent[ulp_v]=ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+public:
+    int minimumHammingDistance(vector<int>& source, vector<int>& target, vector<vector<int>>& allowedSwaps) {
+        int n=source.size();
+        rank.assign(n,0);
+        parent.resize(n);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        for(auto &e:allowedSwaps){
+            int u=e[0];
+            int v=e[1];
+            unionr(u,v);
+        }
+        vector<vector<int>>component(n);
+        for(int i=0;i<n;i++){
+            component[find(i)].push_back(i);
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            if(component[i].empty()){
+                continue;
+            }
+            vector<int> x,y;
+            for(int id:component[i]){
+                x.push_back(source[id]);
+                y.push_back(target[id]);
+            }
+            sort(x.begin(),x.end());
+            sort(y.begin(),y.end());
+            int a=0;
+            int b=0;
+            int match=0;
+            while(a<x.size()&&b<y.size()){
+                if(x[a]==y[b]){
+                    match++;
+                    a++;
+                    b++;
+                }
+                else if(x[a]<y[b]){
+                    a++;
+                }
+                else{
+                    b++;
+                }
+            }
+            ans+=x.size()-match;
+        }
+        return ans;
+    }
+};
