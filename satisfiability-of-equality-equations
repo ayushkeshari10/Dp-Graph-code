@@ -1,0 +1,51 @@
+class Solution {
+    vector<int>parent,rank;
+    int find(int node){
+        if(node==parent[node]){
+            return node;
+        }
+        return parent[node]=find(parent[node]);
+    }
+    void unionr(int u,int v){
+        int ulp_u=find(u);
+        int ulp_v=find(v);
+        if(ulp_u==ulp_v){
+            return ;
+        }
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+        else if(rank[ulp_v]<rank[ulp_u]){
+            parent[ulp_v]=ulp_u;
+        }
+        else{
+            rank[ulp_u]++;
+            parent[ulp_v]=ulp_u;
+        }
+    }
+public:
+    bool equationsPossible(vector<string>& equation) {
+        parent.resize(26);
+        rank.assign(26,0);
+        for(int i=0;i<26;i++){
+            parent[i]=i;
+        }
+        for(auto &e:equation){
+            if(e[1]=='='){
+                int u=e[0]-'a';
+                int v=e[3]-'a';
+                unionr(u,v);
+            }
+        }
+        for(auto &e:equation){
+            if(e[1]=='!'){
+                int u=e[0]-'a';
+                int v=e[3]-'a';
+                if(find(u)==find(v)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+};
