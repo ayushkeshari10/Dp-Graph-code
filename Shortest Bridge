@@ -1,0 +1,60 @@
+class Solution {
+public:
+void dfs(int i,int j,vector<vector<int>>&grid,vector<vector<bool>>&visited,queue<pair<int,int>>&q){
+    int n=grid.size();
+    if(i<0||j<0||i>=n||j>=n||grid[i][j]==0||visited[i][j]){
+        return;
+    }
+    visited[i][j]=true;
+    q.push({i,j});
+    dfs(i+1,j,grid,visited,q);
+    dfs(i-1,j,grid,visited,q);
+    dfs(i,j+1,grid,visited,q);
+    dfs(i,j-1,grid,visited,q);
+}
+    int shortestBridge(vector<vector<int>>& grid) {
+      int n=grid.size();
+     bool check=false;
+      vector<vector<bool>>visited(n,vector<bool>(n,0));
+      queue<pair<int,int>>q;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    dfs(i,j,grid,visited,q);
+                    check=true;
+                    break;
+                }
+            }
+                if(check){
+                    break;
+                }
+            }
+        int steps=0;
+        int dx[]={0,0,1,-1};
+        int dy[]={1,-1,0,0};
+        while(!q.empty()){
+            int s=q.size();
+            while(s--){
+               int r=q.front().first;
+               int c=q.front().second;
+               q.pop();
+               for(int k=0;k<4;k++){
+                int nr=r+dx[k];
+                int nc=c+dy[k];
+                if(nr>=0&&nc>=0&&nr<n&&nc<n){
+                    if(visited[nr][nc]){
+                        continue;
+                    }
+                    if(grid[nr][nc]==1){
+                        return steps;
+                    }
+                    visited[nr][nc]=true;
+                    q.push({nr,nc});
+                }
+               }
+            }
+            steps++;
+        }
+        return -1;
+    }
+};
